@@ -17,6 +17,7 @@ def information
   based on a keyword. Users also have the option to save jobs that interest them!"
   puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
+
   puts "To return back to Main Menu, please enter 'exit'"
   user_input = gets.chomp.downcase
   if user_input == "exit"

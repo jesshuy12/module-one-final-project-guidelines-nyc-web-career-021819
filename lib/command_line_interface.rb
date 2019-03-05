@@ -12,10 +12,11 @@ def starting_menu_showcase
 end
 
 def information
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   puts "Job-ly is a command line interface app that allows users to search up jobs
   based on a keyword. Users also have the option to save jobs that interest them!"
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
 
   puts "To return back to Main Menu, please enter 'exit'"
   user_input = gets.chomp.downcase
@@ -30,25 +31,57 @@ def information
 end
 
 def create_user
-  puts "Please enter a valid username"
+  puts "Please enter a valid username to create"
+  puts "Example Username ----> Jessy "
   puts "To exit back to main menu, please type 'exit'"
   user_input = gets.chomp.downcase
+    # if user_input == "exit"
+    #   starting_menu_showcase
+    #   starting_menu
+    # else
+    #   puts "Invalid input, please try again"
+    #   create_user
+    # end
+    if User.find_username(user_input) == nil   #create User.find_username in user.rb
+      User.create_username(name: user_input)
+      puts "Username (#{user_input}) has been created!"
+      puts "Proceed to login with the created username"
+      starting_menu_showcase
+      starting_menu
+    else
+      puts "Username is not avaliable, please try again"
+      create_user
+    end
+
+end
+
+  def login
+    puts "Please enter a valid username"
+    puts "To exit back to main menu, please type 'exit'"
+    user_input = gets.chomp.downcase
     if user_input == "exit"
       starting_menu_showcase
       starting_menu
     else
       puts "Invalid input, please try again"
-      create_user
+      login
+    end
+    if User.find_username(user_input) == nil
+      puts "That username does not have an associated account, please try again"
+      login
+    else
+      logged_in_menu
+      logged_in_menu_showcase
     end
 
-end
+  end
 
 def starting_menu
   puts "Please Enter One of the Following Options"
   user_input = gets.chomp.downcase
   case user_input
     when "login", "1"
-    #login_in
+      login
     when "create new user", "2"
      create_user
     when "information about job-ly", "3"
@@ -61,32 +94,31 @@ def starting_menu
   end
 end
 
-def logged_in_menu_showcase
-  puts "1. Search by keyword"
-  puts "2. View Favorites"
-  puts "3. Delete Favorites"
-  puts "4. Exit"
-end
+  def logged_in_menu_showcase
+    puts "-----------------------------------------"
+    puts "1. Search by keyword"
+    puts "2. View Favorites"
+    puts "3. Delete Favorites"
+    puts "4. Exit"
+    puts "-----------------------------------------"
+  end
 
   def logged_in_menu
     puts "Please Enter One of the Following Options"
     user_input = gets.chomp.downcase
-    if user_input = "search by keyword" || "1"
+    case user_input
+    when "search by keyword", "1"
       #method
-    elsif user_input =  "view favorites" || "2"
+    when "view favorites", "2"
       #method
-    elsif user_input = "delete favorites" || "3"
+    when "delete favorites", "3"
       #method
-    elsif user_input = "exit" || "4"
-      puts ("Returning to Main Menu")
+    when "exit", "4"
+      puts "Returning to Main Menu"
       starting_menu
     else
       puts "Invalid Option, Please Enter a Valid Option"
       logged_in_menu
     end
-
-  # def information
-  #   puts "Job-ly is a command line interface app that allows users to search up jobs based on a keyword. Users also have the option to save jobs that interest them!"
-  # end
 
 end

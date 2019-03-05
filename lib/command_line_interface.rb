@@ -16,7 +16,7 @@ def information
   puts "Job-ly is a command line interface app that allows users to search up jobs
   based on a keyword. Users also have the option to save jobs that interest them!"
   puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  
+
   puts "To return back to Main Menu, please enter 'exit'"
   user_input = gets.chomp.downcase
   if user_input == "exit"
@@ -71,13 +71,13 @@ end
   def logged_in_menu
     puts "Please Enter One of the Following Options"
     user_input = gets.chomp.downcase
-    if user_input == "search by keyword" || "1"
+    if user_input = "search by keyword" || "1"
       #method
-    elsif user_input == "view favorites" || "2"
+    elsif user_input =  "view favorites" || "2"
       #method
-    elsif user_input == "delete favorites" || "3"
+    elsif user_input = "delete favorites" || "3"
       #method
-    elsif user_input == "exit" || "4"
+    elsif user_input = "exit" || "4"
       puts ("Returning to Main Menu")
       starting_menu
     else

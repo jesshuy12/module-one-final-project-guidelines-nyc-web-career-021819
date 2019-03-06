@@ -6,6 +6,8 @@ def greeting
  puts "Welcome to Job-ly, a simple way to find jobs!"
 end
 
+################################################################################
+
 def starting_menu_showcase
   puts "               MAIN MENU                "
   puts "----------------------------------------"
@@ -16,11 +18,13 @@ def starting_menu_showcase
   puts "----------------------------------------"
 end
 
+################################################################################
+
 def information
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   puts "Job-ly is a command line interface app that allows users to search up jobs
-  based on a keyword. Users also have the option to save jobs that interest them!"
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      based on a keyword. Users also have the option to save jobs that interest them!"
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   puts "To return back to Main Menu, please enter 'return'"
   user_input = gets.chomp.downcase
   if user_input == "return"
@@ -30,11 +34,12 @@ def information
     puts "Invalid input, please try again."
     information
   end
-
 end
 
+################################################################################
+
 def create_user
-  puts "---------------------------------------------------"
+  puts "---------------CREATE USER MENU--------------------"
   puts "Please enter a valid username to create"
   puts "Example Username ----> jessy "
   puts "To return back to main menu, please type 'return'"
@@ -42,33 +47,32 @@ def create_user
     if user_input == "return"
       starting_menu_showcase
       starting_menu
-    # else
-    #   puts "Invalid input, please try again"
-    #   create_user
-    # end
-  elsif User.find_username?(user_input) == nil  #create User.find_username in user.rb
+    elsif User.find_username?(user_input) == nil
       User.create_username(user_input)
-      puts "Username (#{user_input}) has been created!"
-      puts "Proceed to login with the created username"
+        puts "Username (#{user_input}) has been created!"
+        puts "Proceed to login with the created username"
       starting_menu_showcase
       starting_menu
     else
-      puts "-----------------------------------------------"
       puts "!!Username is not avaliable, please try again!!"
       create_user
     end
-
 end
 
+################################################################################
+
   def login
-    puts "---------------------------------------------------"
+    puts " "
+    puts "----------------LOGIN MENU-----------------------"
+    puts "-------------------------------------------------"
     puts "Please enter a valid username"
     puts "To return back to main menu, please type 'return'"
-    user_input = gets.chomp.downcase
+      user_input = gets.chomp.downcase
     if user_input == "return"
       starting_menu_showcase
       starting_menu
     elsif User.find_username?(user_input) == nil
+      puts " "
       puts "----------------------------------------------------------------------"
       puts "That username does not have an associated account, please try again"
       puts "----------------------------------------------------------------------"
@@ -78,10 +82,10 @@ end
       puts "Logged in as #{self.user.name}"
       logged_in_menu_showcase
       logged_in_menu
-
     end
-
   end
+
+################################################################################
 
 def starting_menu
   puts "Please Enter One of the Following Options"
@@ -101,13 +105,17 @@ def starting_menu
   end
 end
 
+################################################################################
+
 def keyword
+  puts "------------SEARCH MENU--------------"
   puts "Please enter a 'keyword' to search by"
   puts "Example ----> 'cook' "
   puts "To return back to previous menu, please type 'return'"
-  found_jobs = []
-  user_input = gets.chomp.downcase
-  jobs = Job.find_job?(user_input)
+  puts "-------------------------------------"
+    found_jobs = []
+    user_input = gets.chomp.downcase
+    jobs = Job.find_job?(user_input)
   if user_input == "return"
     logged_in_menu_showcase
     logged_in_menu
@@ -117,21 +125,88 @@ def keyword
       keyword
   else
     found_jobs << jobs
+    puts found_jobs     #this doesnt really work
   end
   found_jobs
     puts "Would you like to save the job?"
-    puts "Enter (Yes to save)"
-    puts "Enter (No to search again)"
+    puts "Enter (Yes) to save"
+    puts "Enter (No) to search again"
       answer = gets.chomp.downcase
       if answer == "yes"
         #binding.pry
         Search.save(self.user.id, jobs.id, user_input)
+        puts "That job has been saved to your favorites!"
+        puts "Returning back to search menu"
+        keyword
       else
-        puts "----------------------------------------"
         puts "Search Again"
         keyword
       end
 end
+
+################################################################################
+
+  def view_favorites
+    puts "To view saved jobs, please enter 'view'"
+    puts "To return back to previous menu, please enter 'return'"
+
+      puts "---------------SAVED JOBS----------------"
+      # @favorites = []
+      favorites = self.user.jobs
+      favorites.each do |job|
+        puts job.title
+      end
+      puts "-----------------------------------------"
+        logged_in_menu_showcase
+        logged_in_menu
+  end
+
+################################################################################
+
+  def delete_jobs
+    self.user.jobs.destroy_all
+  end
+
+################################################################################
+
+  def delete_favorites
+    puts "To delete all saved jobs, please enter 'delete'"
+    puts "To return back to previous menu, please type 'return'"
+      user_input = gets.chomp.downcase
+    if user_input == "delete"
+      delete_jobs
+      puts "Your saved jobs have been deleted successfully"
+      logged_in_menu_showcase
+      logged_in_menu
+    elsif user_input == "return"
+      logged_in_menu_showcase
+      logged_in_menu
+    else
+      puts "Invalid input, please try again"
+      delete_favorites
+    end
+  end
+
+################################################################################
+
+# def self.update_username(new_name)
+#   user = Self.user.name
+#   user.name = new_name
+#   user
+
+################################################################################
+def update
+  puts "Please enter a new username"
+    user_input = gets.chomp.downcase
+    #binding.pry
+    self.user.update(name: user_input)
+    # user.name = new_name
+  puts "Your new username is #{user_input}"
+    logged_in_menu_showcase
+    logged_in_menu
+end
+
+################################################################################
 
   def logged_in_menu_showcase
     puts "               USER MENU                 "
@@ -139,9 +214,12 @@ end
     puts "1. Search by keyword"
     puts "2. View Favorites"
     puts "3. Delete Favorites"
-    puts "4. Return to Main Menu"
+    puts "4. Update Username"
+    puts "5. Return to Main Menu"
     puts "-----------------------------------------"
   end
+
+################################################################################
 
   def logged_in_menu
     puts "Please Enter One of the Following Options"
@@ -150,10 +228,12 @@ end
     when "search by keyword", "1"
       keyword
     when "view favorites", "2"
-      #method
+      view_favorites
     when "delete favorites", "3"
-      #method
-    when "return to main menu", "4", "exit", "return"
+      delete_favorites
+    when "update username", "4"
+      update
+    when "return to main menu", "5", "exit", "return"
       puts "Returning to Main Menu"
       starting_menu_showcase
       starting_menu
@@ -162,7 +242,8 @@ end
       logged_in_menu_showcase
       logged_in_menu
     end
-
 end
+
+################################################################################
 
 end

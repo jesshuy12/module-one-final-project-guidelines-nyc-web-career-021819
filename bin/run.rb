@@ -1,4 +1,6 @@
 require_relative '../config/environment'
+ActiveRecord::Base.logger = false
+
 new_cli = CLI.new
 
 new_cli.greeting

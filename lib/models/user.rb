@@ -13,4 +13,8 @@ def self.find_username?(user_input)
   self.all.find_by(name: user_input)
 end
 
+def self.view_favorites
+  self.jobs
+end
+
 end

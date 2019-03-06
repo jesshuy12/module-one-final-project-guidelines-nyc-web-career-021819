@@ -5,4 +5,7 @@ class Search < ActiveRecord::Base
    def self.save(user_id, job_id, keyword)
      self.create(user_id: user_id, job_id: job_id, keyword: keyword)
    end
+
+
+
 end

@@ -2,15 +2,32 @@ class CLI
 
   attr_accessor :user
 
+################################################################################
+
+  def clear_screen
+    cursor = TTY::Cursor
+    print cursor.clear_screen
+  end
+
+################################################################################
+
 def greeting
+ clear_screen
  puts " "
  puts "Welcome to Job-ly, a simple way to find jobs!".colorize(:yellow)
  puts " "
+ # a = Artii::Base.new :font => 'slant'
+ # puts a.asciify('Job-ly!').colorize(:yellow)
 end
 
 ################################################################################
 
 def starting_menu_showcase
+  clear_screen
+  greeting
+  a = Artii::Base.new :font => 'slant'
+  puts a.asciify('Job-ly!').colorize(:yellow)
+  puts " "
   puts "               MAIN MENU                ".colorize(:light_cyan)
   puts "----------------------------------------".colorize(:light_cyan)
   puts "1. Login"
@@ -23,13 +40,17 @@ end
 ################################################################################
 
 def information
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  puts "Job-ly is a command line interface app that allows users to search up jobs
-   based on a keyword. Users also have the option to save jobs that interest them!"
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  puts "To return back to Main Menu, please enter 'return'"
+  clear_screen
+  a = Artii::Base.new :font => 'slant'
+  puts a.asciify('Job-ly!').colorize(:yellow)
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".colorize(:light_cyan)
+  puts "Job-ly is a command line interface app that allows users to search up jobs based
+    on a keyword. Users also have the option to save jobs that interest them!"
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".colorize(:light_cyan)
+  puts "To return back to Main Menu, enter any key"
   user_input = gets.chomp.downcase
-  if user_input == "return"
+  if user_input == "return" || "exit"
+    clear_screen
     starting_menu_showcase
     starting_menu
   else
@@ -40,53 +61,80 @@ end
 
 ################################################################################
 
-def create_user
+def user_menu_showcase
   puts "                   CREATE USER                     ".colorize(:light_cyan)
   puts "---------------------------------------------------".colorize(:light_cyan)
   puts "Please enter a valid username to create"
   puts "Example Username ----> jessy "
   puts "To return back to main menu, please type 'return'"
   puts "---------------------------------------------------".colorize(:light_cyan)
-  user_input = gets.chomp.downcase
+end
+
+################################################################################
+
+def create_user
+  clear_screen
+  user_menu_showcase
+  valid = false
+  until valid
+    user_input = gets.chomp.downcase
     if user_input == "return"
+      valid = true
+      clear_screen
       starting_menu_showcase
       starting_menu
     elsif User.find_username?(user_input) == nil
+      valid = true
       User.create_username(user_input)
+      clear_screen
         puts "Username (#{user_input}) has been created!".colorize(:green)
-        puts "Proceed to login with the created username"
+        puts "Proceed to login with the created username".colorize(:green)
       starting_menu_showcase
       starting_menu
     else
       puts "!!Username is not avaliable, please try again!!".colorize(:red)
-      create_user
     end
+  end
+end
+
+################################################################################
+
+def login_info_showcase
+  puts "                     LOGIN                       ".colorize(:light_cyan)
+  puts "-------------------------------------------------".colorize(:light_cyan)
+  puts "Please enter your username"
+  puts "To return back to main menu, please type 'return'"
+  puts "-------------------------------------------------".colorize(:light_cyan)
 end
 
 ################################################################################
 
   def login
-    puts "                     LOGIN                       ".colorize(:light_cyan)
-    puts "-------------------------------------------------".colorize(:light_cyan)
-    puts "Please enter a valid username"
-    puts "To return back to main menu, please type 'return'"
-    puts "-------------------------------------------------".colorize(:light_cyan)
+    clear_screen
+    login_info_showcase
+    valid = false
+    until valid
       user_input = gets.chomp.downcase
     if user_input == "return"
+      valid = true
+      clear_screen
       starting_menu_showcase
       starting_menu
     elsif User.find_username?(user_input) == nil
       #puts "-------------------------------------------------------------------"
       puts "That username does not have an associated account, please try again".colorize(:red)
       #puts "-------------------------------------------------------------------"
-      login
     else
+      valid = true
       self.user = User.find_username?(user_input)
-      puts "Logged in as #{self.user.name}".colorize(:green)
+      clear_screen
+      puts "Logged in as (#{self.user.name})".colorize(:green)
+      puts " "
       logged_in_menu_showcase
       logged_in_menu
     end
   end
+end
 
 ################################################################################
 
@@ -103,49 +151,58 @@ def starting_menu
     when "exit", "4"
       abort("Exiting Application".colorize(:red))
     else
+      clear_screen
       puts "Invalid Option, Please Enter a Valid Option".colorize(:red)
+      puts " "
+      starting_menu_showcase
       starting_menu
   end
 end
 
 ################################################################################
 
-def keyword
+def keyword_menu
   puts "                     SEARCH                          ".colorize(:light_cyan)
   puts "-----------------------------------------------------".colorize(:light_cyan)
   puts "Please enter a 'keyword' to search by"
   puts "Example ----> 'cook' "
   puts "To return back to previous menu, please type 'return'"
   puts "-----------------------------------------------------".colorize(:light_cyan)
-    # found_jobs = []
+end
+
+################################################################################
+
+def keyword
+  clear_screen
+  keyword_menu
+    valid = false
+    until valid
     user_input = gets.chomp.downcase
-    jobs = Job.find_job?(user_input)
   if user_input == "return"
+    valid = true
     logged_in_menu_showcase
     logged_in_menu
-  elsif jobs == nil
+  elsif Job.find_job?(user_input) == nil
     puts "There are no jobs avaliable at the moment".colorize(:red)
     puts "            Please try again             ".colorize(:red)
-      keyword
-  #else
-    #puts jobs.title
-    #this doesnt really work
-  end
-  #found_jobs
+  else
+    Job.find_job?(user_input)
     puts "Would you like to save the job?"
     puts "Enter (Yes) to save".colorize(:green)
     puts "Enter (No) to search again".colorize(:red)
       answer = gets.chomp.downcase
       if answer == "yes"
         #binding.pry
-        Search.save(self.user.id, jobs.id, user_input)
+        Search.save(self.user.id, Job.find_job?(user_input).id, user_input)
         puts "That job has been saved to your favorites!".colorize(:green)
-        puts "Returning back to search menu"
-        keyword
+        puts "Enter a keyword to search again".colorize(:yellow)
+        puts "Enter return to go back to User Menu".colorize(:red)
       else
-        puts "Search Again".colorize(:red)
-        keyword
+        puts "Enter a keyword to search again".colorize(:yellow)
+        puts "Enter return to go back to User Menu".colorize(:red)
       end
+    end
+  end
 end
 
 ################################################################################
@@ -213,6 +270,7 @@ end
 ################################################################################
 
   def logged_in_menu_showcase
+    clear_screen
     puts "               USER MENU                 ".colorize(:light_cyan)
     puts "-----------------------------------------".colorize(:light_cyan)
     puts "1. Search by keyword"

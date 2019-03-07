@@ -65,7 +65,7 @@ def user_menu_showcase
   puts "                   CREATE USER                     ".colorize(:light_cyan)
   puts "---------------------------------------------------".colorize(:light_cyan)
   puts "Please enter a valid username to create"
-  puts "Example Username ----> jessy "
+  puts "Example Username ----> 'name'"
   puts "To return back to main menu, please type 'return'"
   puts "---------------------------------------------------".colorize(:light_cyan)
 end
@@ -89,10 +89,12 @@ def create_user
       clear_screen
         puts "Username (#{user_input}) has been created!".colorize(:green)
         puts "Proceed to login with the created username".colorize(:green)
+        puts "Enter any key to return back to Menu"
+        answer = gets.chomp.downcase
       starting_menu_showcase
       starting_menu
     else
-      puts "!!Username is not avaliable, please try again!!".colorize(:red)
+      puts "Username not avaliable, please try again!".colorize(:red)
     end
   end
 end
@@ -122,7 +124,7 @@ end
       starting_menu
     elsif User.find_username?(user_input) == nil
       #puts "-------------------------------------------------------------------"
-      puts "That username does not have an associated account, please try again".colorize(:red)
+      puts "That username does not exit, please try again!".colorize(:red)
       #puts "-------------------------------------------------------------------"
     else
       valid = true
@@ -166,7 +168,7 @@ def keyword_menu
   puts "-----------------------------------------------------".colorize(:light_cyan)
   puts "Please enter a 'keyword' to search by"
   puts "Example ----> 'cook' "
-  puts "To return back to previous menu, please type 'return'"
+  puts "To return back to User Menu, please type 'return'"
   puts "-----------------------------------------------------".colorize(:light_cyan)
 end
 
@@ -183,21 +185,26 @@ def keyword
     logged_in_menu_showcase
     logged_in_menu
   elsif Job.find_job?(user_input) == nil
-    puts "There are no jobs avaliable at the moment".colorize(:red)
-    puts "            Please try again             ".colorize(:red)
+    puts "Could not find any jobs related to that keyword".colorize(:red)
+    puts "               Please try again                ".colorize(:red)
   else
     Job.find_job?(user_input)
     puts "Would you like to save the job?"
     puts "Enter (Yes) to save".colorize(:green)
     puts "Enter (No) to search again".colorize(:red)
       answer = gets.chomp.downcase
-      if answer == "yes"
+      case answer
+      when "yes", "y"
         #binding.pry
+        clear_screen
+        a = Artii::Base.new
+        puts a.asciify('SAVED').colorize(:green)
         Search.save(self.user.id, Job.find_job?(user_input).id, user_input)
         puts "That job has been saved to your favorites!".colorize(:green)
         puts "Enter a keyword to search again".colorize(:yellow)
         puts "Enter return to go back to User Menu".colorize(:red)
-      else
+      when "no", "n"
+        clear_screen
         puts "Enter a keyword to search again".colorize(:yellow)
         puts "Enter return to go back to User Menu".colorize(:red)
       end
@@ -208,8 +215,8 @@ end
 ################################################################################
 
   def view_favorites
-    puts "To view saved jobs, please enter 'view'"
-    puts "To return back to previous menu, please enter 'return'"
+    clear_screen
+    #if user_input == "view"
       puts "               SAVED JOBS                ".colorize(:light_cyan)
       puts "-----------------------------------------".colorize(:light_cyan)
       # @favorites = []
@@ -218,9 +225,11 @@ end
         puts job.title
       end
       puts "-----------------------------------------".colorize(:light_cyan)
+      puts "Enter any key to return back to User Menu".colorize(:yellow)
+      user_input = gets.chomp.downcase
         logged_in_menu_showcase
         logged_in_menu
-  end
+end
 
 ################################################################################
 
@@ -231,21 +240,32 @@ end
 ################################################################################
 
   def delete_favorites
-    puts "To delete all saved jobs, please enter 'delete'"
-    puts "To return back to previous menu, please type 'return'"
+    clear_screen
+    a = Artii::Base.new
+    puts a.asciify('WARNING').colorize(:red)
+    puts "To delete all saved jobs, please enter 'i want to delete'".colorize(:red)
+    puts "To return back to previous menu, please type 'return'".colorize(:yellow)
+    valid = false
+    until valid
       user_input = gets.chomp.downcase
-    if user_input == "delete"
+    if user_input == "i want to delete"
+      valid = true
       delete_jobs
       puts "Your saved jobs have been deleted successfully".colorize(:green)
+      puts "Enter any key to return back to User Menu".colorize(:yellow)
+      answer = gets.chomp.downcase
       logged_in_menu_showcase
       logged_in_menu
     elsif user_input == "return"
+      valid = true
       logged_in_menu_showcase
       logged_in_menu
     else
       puts "Invalid input, please try again".colorize(:red)
-      delete_favorites
     end
+
+    end
+
   end
 
 ################################################################################
@@ -257,12 +277,15 @@ end
 
 ################################################################################
 def update
-  puts "Please enter a new username"
+  clear_screen
+  puts "Please enter a new username".colorize(:yellow)
     user_input = gets.chomp.downcase
     #binding.pry
     self.user.update(name: user_input)
     # user.name = new_name
   puts "Your new username is #{user_input}".colorize(:green)
+  puts "Enter any key to return back to User Menu".colorize(:yellow)
+  answer = gets.chomp.downcase
     logged_in_menu_showcase
     logged_in_menu
 end

@@ -43,10 +43,11 @@ def information
   clear_screen
   a = Artii::Base.new :font => 'slant'
   puts a.asciify('Job-ly!').colorize(:yellow)
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".colorize(:light_cyan)
-  puts "Job-ly is a command line interface app that allows users to search up jobs based
-    on a keyword. Users also have the option to save jobs that interest them!"
-  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".colorize(:light_cyan)
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".colorize(:light_cyan)
+  puts "Job-ly is a command line interface application"
+  puts "Allows users to search up jobs based on a keyword"
+  puts "Users have the option to save jobs that interest them!"
+  puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".colorize(:light_cyan)
   puts "To return back to Main Menu, enter any key"
   user_input = gets.chomp.downcase
   if user_input == "return" || "exit"
@@ -244,7 +245,7 @@ end
     a = Artii::Base.new
     puts a.asciify('WARNING').colorize(:red)
     puts "To delete all saved jobs, please enter 'i want to delete'".colorize(:red)
-    puts "To return back to previous menu, please type 'return'".colorize(:yellow)
+    puts "To return back to previous menu, please enter 'return'".colorize(:yellow)
     valid = false
     until valid
       user_input = gets.chomp.downcase

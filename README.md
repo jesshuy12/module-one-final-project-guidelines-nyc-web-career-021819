@@ -4,7 +4,7 @@
 
 A command line app that allows a user to search for jobs
 
-Core features of Job-lY.
+Core features of Job-ly.
 
 * Create User
 User can create an account by entering a username and add themselves
